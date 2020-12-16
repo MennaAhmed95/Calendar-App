@@ -12,6 +12,7 @@ import {
   Paper,
 } from "@material-ui/core";
 import AddEvent from "./../AddEvent";
+import AddIcon from "./../AddIcon/index";
 
 const useStyles = makeStyles({
   table: {
@@ -31,62 +32,51 @@ const Calender = () => {
     getNextMonth,
     getPrevMonth,
   } = useCalendar();
-  const [eventToEditt, setEventToEditt] = useState({});
-  const [events, setEvents] = useState([]);
-  const [selectDate, setSelectDate] = useState(selectedDate);
-  const [showEventModal, setShowEventModal] = useState(false);
+
+  let [eventToEditt, setEventToEditt] = useState({});
+  let [events, setEvents] = useState([]);
+  let [selectDate, setSelectDate] = useState(selectedDate);
+  let [showEventModal, setShowEventModal] = useState(false);
   useEffect(() => {
     let events =
       localStorage.getItem("CalendarEvents") !== ("undefined" && null)
         ? JSON.parse(localStorage.getItem("CalendarEvents"))
         : [];
+    console.log("eve", events);
     setEvents(events);
-  });
+  }, []);
+  useEffect(() => {
+    toggleModal();
+    localStorage.setItem("CalendarEvents", JSON.stringify(events));
+  }, [events]);
   const toggleModal = () => {
-    const newState = { showEventModal: !showEventModal };
+    showEventModal = !showEventModal;
     if (showEventModal) {
-      newState.setEventToEditt({});
+      setEventToEditt({});
     }
-    setShowEventModal(newState);
+    setShowEventModal(showEventModal);
   };
   const dateClickHandler = (date) => {
-    setSelectDate(date);
+    selectDate = date;
+    setSelectDate(selectDate);
     toggleModal();
     console.log(date);
   };
   const sty = useStyles();
-  const handleFormSubmit = ({ id, title, description, date, time }) => {
-    console.log(title);
-    if (id) {
-      const updatedEvent = {
-        id,
-        title,
-        description,
-        date,
-        time,
-      };
-      const eventIndex = events.findIndex((e) => e.id === id);
-      events.splice(eventIndex, 1, updatedEvent);
-      setEvents(events, () => {
-        toggleModal();
-        localStorage.setItem("CalendarEvents", JSON.stringify(events));
-      });
-    } else {
-      const lastEvent = events[events.length - 1];
-      const newEvent = {
-        id: ((lastEvent && lastEvent.id) || 0) + 1,
-        title,
-        description,
-        date: selectedDate,
-        time,
-      };
-      events = events.concat(newEvent);
-      setEvents(events, () => {
-        toggleModal();
-        localStorage.setItem("CalendarEvents", JSON.stringify(events));
-      });
-    }
-  };
+  function handleFormSubmit({ id, title, description, date, time }) {
+    const lastEvent = events.length;
+    console.log("lastEvent : ", lastEvent);
+    const newEvent = {
+      id: (lastEvent || 0) + 1,
+      title,
+      description,
+      date: selectDate,
+      time,
+    };
+    events = [...events, newEvent];
+    setEvents(events);
+    console.log(events);
+  }
   return (
     <>
       <TableContainer component={Paper}>
@@ -123,11 +113,7 @@ const Calender = () => {
                         onClick={() => dateClickHandler(col.date)}
                       >
                         {col.value}
-                        <Icon
-                          className="fa fa-plus-circle"
-                          style={{ color: "bisque", marginLeft: "10%" }}
-                          fontSize="small"
-                        ></Icon>
+                        <AddIcon />
                       </TableCell>
                     ) : (
                       <TableCell
@@ -136,11 +122,22 @@ const Calender = () => {
                         onClick={() => dateClickHandler(col.date)}
                       >
                         {col.value}
-                        <Icon
-                          className="fa fa-plus-circle"
-                          style={{ color: "bisque", marginLeft: "10%" }}
-                          fontSize="small"
-                        ></Icon>
+                        <AddIcon />
+                        <div>
+                          {/* {events
+                            .filter((e) => e.date === selectDate)
+                            .map((e, i) => {
+                              return (
+                                <div
+                                  key={i}
+                                  className="event-data"
+                                >
+                                  {e.time} - {e.title}
+                                  hiiiii
+                                </div>
+                              );
+                            })} */}
+                        </div>
                       </TableCell>
                     )
                   )}

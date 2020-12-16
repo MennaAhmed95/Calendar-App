@@ -21,32 +21,12 @@ const AddEvent = ({
     });
   };
 
-  const setTitle = (t) => {
-    setEventToEdit((prevState) => ({
-      eventToEdit: {
-        ...prevState.eventToEdit,
-        title: t,
-      },
-    }));
-  };
+  const setTitle = (t) => setEventToEdit({ ...eventToEdit, title: t });
 
-  const setDescription = (d) => {
-    setEventToEdit((prevState) => ({
-      eventToEdit: {
-        ...prevState.eventToEdit,
-        description: d,
-      },
-    }));
-  };
+  const setDescription = (d) =>
+    setEventToEdit({ ...eventToEdit, description: d });
 
-  const setTime = (t) => {
-    setEventToEdit((prevState) => ({
-      eventToEdit: {
-        ...prevState.eventToEdit,
-        time: t,
-      },
-    }));
-  };
+  const setTime = (t) => setEventToEdit({ ...eventToEdit, time: t });
 
   const { title, description, time } = eventToEdit;
 
