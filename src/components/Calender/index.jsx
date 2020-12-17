@@ -35,7 +35,7 @@ const Calender = () => {
 
   let [eventToEditt, setEventToEditt] = useState({});
   let [events, setEvents] = useState([]);
-  let [selectDate, setSelectDate] = useState(selectedDate);
+  let [selectDate, setSelectDate] = useState("");
   let [showEventModal, setShowEventModal] = useState(false);
   useEffect(() => {
     let events =
@@ -124,19 +124,15 @@ const Calender = () => {
                         {col.value}
                         <AddIcon />
                         <div>
-                          {/* {events
-                            .filter((e) => e.date === selectDate)
-                            .map((e, i) => {
-                              return (
-                                <div
-                                  key={i}
-                                  className="event-data"
-                                >
+                          {events.map((e, i) => {
+                            return (
+                              e.date === col.date && (
+                                <div key={i} className="event-data">
                                   {e.time} - {e.title}
-                                  hiiiii
                                 </div>
-                              );
-                            })} */}
+                              )
+                            );
+                          })}
                         </div>
                       </TableCell>
                     )
